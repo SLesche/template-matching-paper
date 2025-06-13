@@ -1,0 +1,165 @@
+---
+title             : "Automatically Extracting P3 Latencies Using a Dynamic Template Matching Algorithm"
+shorttitle        : "Template Matching"
+
+author: 
+  - name          : "Sven Lesche"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Psychologisches Institut, Hauptstraße 47-51, 69117 Heidelberg"
+    email         : "sven.lesche@psychologie.uni-heidelberg.de"
+    # role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+    #   - "Conceptualization"
+    #   - "Writing - Original Draft Preparation"
+    #   - "Writing - Review & Editing"
+  - name          : "Kathrin Sadus"
+    affiliation   : "1"
+    # role:
+    #   - "Supervision"
+  - name          : "Anna-Lena Schubert"
+    affiliation   : "2"
+  - name          : "Christoph Löffler"
+    affiliation   : "2"
+  - name          : "Dirk Hagemann"
+    affiliation   : "1"
+    # role:
+    #   - "Supervision"
+
+
+affiliation:
+  - id            : "1"
+    institution   : "Heidelberg University"
+  - id            : "2"
+    institution   : "University of Mainz"
+  # add a second id using this syntax
+
+authornote: |
+  The authors acknowledge support by the state of Baden-Württemberg through bwHPC.
+
+abstract: |
+ In this study, we introduce a template matching algorithm using the grand average as a dynamic template to extract P3 latencies. This new algorithm outperforms peak latency and area latency algorithms in both empirical data and a simulation. Template matching algorithms showed the highest correlation with latencies extracted by expert researchers and the most accurate recovery of simulated latency shifts. Our results highlight the robustness of template matching algorithms across various tasks, preprocessing steps, and algorithm hyperparameters. Additionally, template matching provides a fit statistic that researchers can use to automatically discard ERPs with poor matches or flag certain ERPs for manual review. This template matching algorithm is objective, efficient, reliable, and more valid than previous methods. Template matching can be used in the final latency estimation steps of multiverse studies and automated pipelines. 
+
+keywords          : "event-related potentials, latency extraction, P3, template matching"
+
+bibliography      : ["r-references.bib", "template_matching.bib"] # put your ref files here
+
+floatsintext      : no # for pics in text
+linenumbers       : no
+draft             : no
+mask              : no
+
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+link-citations    : true # custom addin, makes citations link to reference section
+# figsintext        : yes # custom addin
+
+classoption       : "man"
+# the settings below allow compilation of APA7 style citations/documents
+header-includes:
+  - |
+    \makeatletter
+    \renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+      {-1em}%
+      {\normalfont\normalsize\bfseries\typesectitle}}
+
+    \renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+      {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+      {-\z@\relax}%
+      {\normalfont\normalsize\bfseries\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+    \makeatother
+  - |
+    \raggedbottom
+  - |
+    \usepackage{hhline}
+  - |
+    \setlength{\parskip}{0pt}
+  - |
+    % This is for using the flextable package
+    \usepackage{colortbl}
+    % Flextable just forgets these two
+    \newlength{\Oldarrayrulewidth}
+    \newlength{\Oldtabcolsep}
+    % This one is placed inside a table environment, so need to call it earlier
+    \providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+csl               : "`r system.file('rmd', 'apa7.csl', package = 'papaja')`"
+documentclass     : "apa7"
+output            : papaja::apa6_pdf
+---
+
+```{r setup, include = FALSE}
+# Working directory
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+# disallow tables breaking over pages
+knitr::opts_chunk$set(ft.keepnext = TRUE,
+                      ft.align = "left",
+                      ft.latex.float = "float")
+# Seed for random number generation
+set.seed(1234)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed) # this adds random seed to all chunks
+knitr::opts_chunk$set(autodep = TRUE)
+knitr::dep_auto()
+
+# disable all in-document warnings
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+<!-- Setup -->
+```{r child = "markdown/setup.Rmd"}
+```
+<!-- Here we incorporate child markdown-documents as the separate parts -->
+
+<!-- Introduction -->
+```{r child = "markdown/introduction.Rmd", eval = TRUE}
+```
+
+<!-- Method -->
+```{r child = "markdown/method_template.Rmd", eval = TRUE}
+```
+
+<!-- Method -->
+```{r child = "markdown/method_study1.Rmd", eval = TRUE}
+```
+
+<!-- Results -->
+```{r child = "markdown/results_study1.Rmd", eval = TRUE}
+```
+
+<!-- Discussion -->
+```{r child = "markdown/discussion_study1.Rmd", eval = TRUE}
+```
+
+<!-- Method -->
+```{r child = "markdown/method_study2.Rmd", eval = TRUE}
+```
+
+<!-- Results -->
+```{r child = "markdown/results_study2.Rmd", eval = TRUE}
+```
+
+<!-- Discussion -->
+```{r child = "markdown/discussion_study2.Rmd", eval = TRUE}
+```
+
+<!-- Discussion -->
+```{r child = "markdown/discussion_general.Rmd", eval = TRUE}
+```
+
+<!-- References -->
+\newpage
+# References
+::: {#refs custom-style="Bibliography"}
+:::
+
+\newpage
+
+# (APPENDIX) Appendix {-}
+
+```{r child = "markdown/appendix.Rmd", eval = TRUE}
+```
+
+

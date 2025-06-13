@@ -1,0 +1,27 @@
+```{r}
+source("markdown/analysis/icc_simulation.R")
+source("markdown/analysis/icc_simulation_linear.R")
+
+```
+
+## Results
+### Descriptive Statistics
+The percentage of missing values per extraction method is reported in Table \@ref(tab:overview-table-missing-simulation). Across preprocessing steps, weighting windows, weighting functions, and without a penalty, the MINSQ algorithm resulted in `r mean_missing_minsq_nopenalty_simulation` missing values and the MAXCOR algorithm in `r mean_missing_maxcor_nopenalty_simulation` missing values. Employing normalized weights reduced the percentage of missing values to `r mean_missing_minsq_nopenalty_normalized_simulation` and `r mean_missing_maxcor_nopenalty_normalized_simulation` for the MINSQ and MAXCOR algorithm, respectively. Penalizing more extreme transformation parameters reduced the percentage of missing values to `r mean_missing_minsq_penalty_simulation` for the MINSQ algorithm and `r mean_missing_maxcor_penalty_simulation` for the MAXCOR algorithm. The peak latency algorithm resulted in `r mean_missing_peak_simulation` missing values.  The area latency and modified area latency algorithm resulted in `r mean_missing_area_simulation` and `r mean_missing_liesefeld_simulation` missing values, respectively.
+
+(ref:overview-table-missing-simulation) Missing values for different algorithms: simulation
+```{r overview-table-missing-simulation, tab.cap=paste("(ref:overview-table-missing-simulation)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_missing_simulation)
+```
+
+### Validity
+Intra-class correlations between true experimental shifts and average recovered shifts can be found in Table \@ref(tab:overview-table-icc-simulation). The choice of weighting function had considerable impact on the recovery of simulated shifts. Hamming and Tukey weighting functions showed a mean `r mean_icc_hammingtukey_simulation` across preprocessing steps, weighting windows, and template matching algorithms. The grand average normalized weighting functions showed a mean `r mean_icc_normalized_simulation`.
+
+Using the MINSQ or MAXCOR algorithm in conjunction with normalized weights yielded mean ICCs of `r mean_icc_minsq_normalized_simulation` and `r mean_icc_maxcor_normalized_simulation`, respectively. The peak latency algorithm showed a mean `r mean_icc_peak_simulation`, the 50% area latency algorithm a mean `r mean_icc_area_simulation`, and the modified area latency algorithm a mean `r mean_icc_liesefeld_simulation`.
+
+(ref:overview-table-icc-simulation) ICC between true and recovered experimental shift for different algorithms: simulation
+```{r overview-table-icc-simulation, tab.cap=paste("(ref:overview-table-icc-simulation)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_simulation)
+```
+
+
+

@@ -1,0 +1,5 @@
+## Discussion
+Similar to the empirical evaluation, using a normalized weighting function yielded the most valid results. Interestingly, both the MINSQ and MAXCOR approach performed well even when no weighting function was applied. These results underscore that Hamming and Tukey weighting functions are not optimal in the case of P3 latency extraction. Only normalized weighting functions performed well in both the empirical evaluation as well as the simulation. While this may change when applying the algorithm to earlier components, we strongly recommend using a normalized weighting function when aiming to extract P3 latencies.
+
+<!-- Both the MINSQ and the MAXCOR approach outperfomed previous approaches in recovering true component latencies. In the simulation, the MINSQ approach with a normalized weighting function lead to slightly better results than the MAXCOR approach. However, it also generated more missing values.  -->
+

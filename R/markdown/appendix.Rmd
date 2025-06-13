@@ -1,0 +1,50 @@
+# Empirical data
+## Missing values
+(ref:overview-table-missing-by-task-kathrin) Missing values of different algorithms by task
+```{r overview-table-missing-by-task-kathrin, tab.cap=paste("(ref:overview-table-missing-by-task-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_missing_by_task_kathrin)
+```
+
+(ref:overview-table-missing-by-filter-kathrin) Missing values of different algorithms by filter setting
+```{r overview-table-missing-by-filter-kathrin, tab.cap=paste("(ref:overview-table-missing-by-filter-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_missing_by_filter_kathrin)
+```
+
+## Reliability
+(ref:overview-table-rel-by-task-kathrin) Reliability of different algorithms by task
+```{r overview-table-rel-by-task-kathrin, tab.cap=paste("(ref:overview-table-rel-by-task-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_rel_by_task_kathrin)
+```
+
+(ref:overview-table-rel-by-filter-kathrin) Reliability of different algorithms by filter setting
+```{r overview-table-rel-by-filter-kathrin, tab.cap=paste("(ref:overview-table-rel-by-filter-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_rel_by_filter_kathrin)
+```
+
+## Validity
+(ref:overview-table-icc-by-task-kathrin) Validity of different algorithms by task
+```{r overview-table-icc-by-task-kathrin, tab.cap=paste("(ref:overview-table-icc-by-task-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_by_task_kathrin)
+```
+
+(ref:overview-table-icc-by-filter-kathrin) Validity of different algorithms by filter setting
+```{r overview-table-icc-by-filter-kathrin, tab.cap=paste("(ref:overview-table-icc-by-filter-kathrin)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_by_filter_kathrin)
+```
+
+# Simulation
+(ref:overview-table-icc-by-filter-simulation) Validity of different algorithms by filter setting
+```{r overview-table-icc-by-filter-simulation, tab.cap=paste("(ref:overview-table-icc-by-filter-simulation)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_by_filter_simulation)
+```
+
+# Linear Simulation
+(ref:overview-table-icc-by-method-simulation-linear) Validity of different algorithms by method
+```{r overview-table-icc-by-method-simulation-linear, tab.cap=paste("(ref:overview-table-icc-by-method-simulation-linear)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_simulation_linear)
+```
+
+(ref:overview-table-icc-by-filter-simulation-linear) Validity of different algorithms by filter setting
+```{r overview-table-icc-by-filter-simulation-linear, tab.cap=paste("(ref:overview-table-icc-by-filter-simulation-linear)"), tab.pos = "h", out.width="75%"}
+knit_print(overview_table_icc_by_filter_simulation_linear)
+```

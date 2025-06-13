@@ -1,0 +1,78 @@
+<!-- This file is for LaTeX and R setups -->
+<!-- Latex -->
+<!-- Problem with Latex stuff is, that it won't compile to word correctly... -->
+
+<!-- R -->
+
+```{r setup-libraries}
+library(papaja)
+library(tidyverse)
+library(rmarkdown)
+library(knitr)
+library(flextable)
+
+r_refs("./markdown/r-references.bib")
+
+r_citations <- cite_r(
+  file = "./markdown/r-references.bib",
+  pkgs = c("papaja", "tidyverse", "knitr", "rmarkdown", "emmeans", "flextable", "afex"),
+  omit = FALSE,
+  footnote = TRUE
+  )
+
+# FitFlextableToPage <- function(ft, pgwidth = 6){
+# 
+#   ft_out <- ft %>% autofit()
+# 
+#   ft_out <- width(ft_out, width = dim(ft_out)$widths*pgwidth /(flextable_dim(ft_out)$widths))
+#   return(ft_out)
+# }
+```
+
+```{r}
+n_simulations <- 250
+```
+
+
+```{r setup-print-percent}
+print_percent <- function(percent){
+  apa_msg = papaja::apa_num(percent)
+  final = paste0(apa_msg, " %")
+  return(final)
+}
+
+print_freq_percent <- function(freq){
+  percent = freq*100
+  apa_msg = papaja::apa_num(percent)
+  final = paste0(apa_msg, " %")
+  return(final)
+}
+
+
+print_rel <- function(rel){
+  return(paste0("$\alpha~=~", papaja::apa_num(rel), "$"))
+}
+
+print_icc <- function(icc){
+  return(paste0("$ICC~=~", papaja::apa_num(icc), "$"))
+}
+```
+
+```{r}
+apa_footer <- function(data, note){
+  flextable::add_footer_lines(
+    x = data,
+    " "
+    ) %>%
+    flextable::compose(
+      # x = data,
+      i = 1,
+      j = 1,
+      part = "footer",
+      value = as_paragraph(
+        as_i("Note. "), note
+      )
+    )
+}
+```
+

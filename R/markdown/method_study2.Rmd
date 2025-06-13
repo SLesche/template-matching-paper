@@ -1,0 +1,30 @@
+# Study 2
+## Method
+All analyses presented here based on data originally published in @schubert2023robust. The original data contain EEG recordings from 6 different tasks. The simulation is limited to the task and condition that yielded the grand average with the most typical P3 - the congruent condition of the Flanker task.
+
+### Participants
+The simulation presented in the second part of this paper is based on the complete set of N = 148 participants ($M_{age}$ = 31.52, $SD_{age}$ = 13.91).
+
+All participants had normal or corrected to normal vision. None of the participants had neurological or mental disorders, used psychotropic drugs, wore a pacemaker or suffered from red-green color vision deficiency. All participants provided informed consent prior to participation and received 75€ or course credit for participation.
+
+### Tasks
+For detailed information regarding the Flanker task, see the method section of Study 1 or @loffler2024common.
+
+### Procedure and EEG recording
+The procedure was identical to the procedure described in study 1 except that the simulation focuses on only the flanker task. 
+
+EEG recording and preprocessing deviated only slightly from the protocol described in Study 1. Instead of using the original recording frequency 1000 Hz, we down-sampled the data to 500 Hz. Additionally, we chose not to investigate the data where no low-pass filter was applied. All other preprocessing steps were identical to study 1.
+
+### Latency extraction techniques
+Again, we compared all versions of a template matching algorithm resulting from the combinations of similarity measures, weighting windows, weighting functions, and penalty methods to traditional approaches such as peak latency, fractional area latency, and the fractional area latency algorithm proposed by @liesefeld2018estimating. For peak latency and 50% area latency algorithms, we tried all weighting windows as measurement windows but focus on the results using the respective measurement windows used by @sadus2024explorative. Here, the peak latency algorithm is used with a window of 250 - 900 ms and the area latency algorithms with a window of 250 - 700 ms. See Figure \@ref(fig:method-overview-img) for an overview.
+
+### Simulation protocol
+We chose to deviate from the simulation protocol used by @kiesel2008measurement in two ways. Firstly, we refrain from shifting the entire signal by a set distance and rather applied a linear transformation along the time-dimension to the entire signal. Scaling the signal has the benefit that no missing values around the origin are created and that this approach may be more realistic as latency shifts are usually not constant for all components but rather increase in magnitude the later the component occurs [@luck2014introduction]. Therefore, we chose to stretch the signal by a value $\lambda$ using the same spline interpolation technique that we employ in the template matching process.
+
+We introduced individual differences in the magnitude of the latency shift by randomly drawing the magnitude of the shift from a normal distribution with a mean of $\mu_\lambda = 0.9$ and a standard deviation of $\sigma_\lambda = 0.05$. We then set this random value as that subject's true latency shift parameter $\lambda_j$ for all iterations of the simulation and for all latency extraction methods.
+
+At the beginning of each iteration, we randomly divided each subject's trials into control and experimental trials and then averaged them to generate control and experimental ERPs. We then stretched the experimental ERPs by that subject's experimental shift parameter $\lambda_j$. We applied all extraction algorithms to the control and experimental ERPs and recorded the recovered component latencies and fit statistics. Finally, we compute the recovered experimental shift of iteration $i$ for person $j$ $\lambda_{i, j}$ by dividing the latency in the control condition $l_{i, j|control}$ by the latency in the experimental condition $l_{i, j|exp}$,
+
+$$\lambda_{i, j} = \frac{l_{i, j|control}}{l_{i, j|exp}}.$$
+
+We repeated this process `r n_simulations` times for each pre-processing step, each time randomly splitting the available trials into a set of control and experimental trials. We removed latency estimates with bad template matching fit statistics ($r < 0.3$) and unreasonable estimates of $\beta$ ($\beta \le 0.5$ or $\beta \ge 1.9$). Then we averaged $\lambda_{i, j}$ over all simulations to obtain the recovered shift parameter per person $\hat{\lambda_j}$. This reduces the error variance that is introduced by the random split into control and experimental trial. We removed subjects where less than 50% of the simulations yielded a valid latency estimate and excluded subjects whose recovered shift parameters were more than three standard deviations away from the mean. Then, we computed the intra-class correlation focusing on absolute agreement between the true shift parameter $\lambda_j$ and the average recovered shift parameter $\hat{\lambda_j}$.

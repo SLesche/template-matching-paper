@@ -1,0 +1,33 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=2.28in]{../images/template_matching_example_introduction} \caption{Transforming the template to match an ERP}\label{fig:introduction-example-img}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=2.28in]{../images/transformation_example} \caption{Transforming the latency of a signal using \(b\)}\label{fig:transformation-example-img}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=2.92in]{../images/weighting_functions_overview} \caption{Overview of weighting functions}\label{fig:weighting-functions-overview-img}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=4.27in]{../images/method_overview} \caption{Overview of extraction algorithms}\label{fig:method-overview-img}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\includegraphics[width=6.4in]{../images/arranged_img_ga} \caption{Grand Averages of the Tasks used at Pz with a 32 Hz low-pass filter}\label{fig:grand-average-plots}
+\end{figure*}
