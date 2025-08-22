@@ -2,6 +2,8 @@ library(tidyverse)
 library(R.matlab)
 
 raw_data <- readMat("../scripts/results/results_kathrinexp23_revision.mat")
+raw_data_liesefeld <- readMat("../scripts/results/results_kathrinexp23_revision_liesefeld.mat")
+
 comb <- read.csv("../scripts/results/method_combinations_revision.csv")
 
 # Full files
@@ -33,7 +35,12 @@ for (itask in seq_along(tasks)){
               normalization = comb[imethod, "possible_normalization"],
               bin = ibin
             )
-            results = as.data.frame(raw_data$full.results[itask, igroup, ifilter][[1]][[1]][icomponent, imethod, ,ibin ,])
+            
+            if (imethod == 20) {
+              results = as.data.frame(raw_data_liesefeld$full.results[itask, igroup, ifilter][[1]][[1]][icomponent, 1, ,ibin ,])
+            } else {
+              results = as.data.frame(raw_data$full.results[itask, igroup, ifilter][[1]][[1]][icomponent, imethod, ,ibin ,])
+            }
             subject = 1:nrow(results)
             
             data = cbind(data, results)

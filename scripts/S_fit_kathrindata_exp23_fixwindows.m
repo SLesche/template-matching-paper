@@ -49,6 +49,9 @@ comb(end+1, :) = {"liesefeld_area", "none", "none", "none"};
 comb(end+1, :) = {"liesefeld_p2p_area", "none", "none", "none"};
 
 writetable(comb, "results/method_combinations_revision.csv")
+
+comb = comb(end, :);
+
 n_methods = height(comb);
 
 full_results = cell(n_tasks, n_groups, n_filter);
@@ -106,11 +109,11 @@ for itask = 1:n_tasks
                     cfg.sign      = 1;              %search for a positive component
                     cfg.percAmp   = 0.3;            %percentage of amplitude for on- and offsets
                     cfg.percArea  = 0.5;            %defaults to 50% anyway
+                    cfg.areaWin = 'ampLat'; % Now revised to the correct approach, restrict by onset/offset, not only crossings
                     cfg.peakWin   = component_windows{icomponent};      %set window for searching the peak
                     cfg.chans = 1;
                     cfg.timeFormat = 'ms';
                     cfg.peakWidth = 5;
-                    cfg.cWinWidth = -100;
                     cfg.fig = false;
                     cfg.extract   = 'areaLat';
             
@@ -181,4 +184,4 @@ for itask = 1:n_tasks
     end
 end
 
-save("results/results_kathrinexp23_revision.mat", 'full_results');
+save("results/results_kathrinexp23_revision_liesefeld.mat", 'full_results');
