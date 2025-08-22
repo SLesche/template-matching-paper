@@ -6,7 +6,7 @@ library(tidyverse)
 source("./markdown/analysis/helper_functions_simulation.R")
 source("./markdown/analysis/helper_funcs_analysis.R")
 
-compute_new = FALSE
+compute_new = TRUE
 
 if(compute_new == TRUE){
   possible_filters <- c("4hz", "8hz", "16hz", "32hz")
@@ -23,7 +23,19 @@ if(compute_new == TRUE){
     conn = dbConnect(SQLite(), paste0("../scripts/results//simulation_results_exp23_", possible_filters[i], "_revision.db"))
     
     data = dbGetQuery(conn, query)
+  
     data[, c(1, 2, 12)] = c()
+    
+    data = data %>% filter(approach != "liesefeld_p2p_area")
+    
+    liesefeld_conn = dbConnect(SQLite(), paste0("../scripts/results//simulation_results_exp23_", possible_filters[i], "_revision_liesefeld.db"))
+    
+    liesefeld_data = dbGetQuery(liesefeld_conn, query)
+    
+    liesefeld_data[, c(1, 2, 12)] = c()
+    
+    data = rbind(data, liesefeld_data)
+    
     data_list[[i]] = data
     
     dbDisconnect(conn)
