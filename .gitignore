@@ -16,3 +16,5 @@ scripts/saved_data/exp23_times.mat
 
 submission/
 *.docx
+R/markdown/analysis/processed_data/full_data_simulation_linear_revision.Rdata
+R/markdown/analysis/processed_data/full_data_simulation_revision.Rdata

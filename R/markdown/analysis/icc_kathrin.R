@@ -156,4 +156,3 @@ overview_table_icc_by_task_kathrin <- mean_icc_by_method_task_kathrin %>%
 overview_table_icc_by_filter_kathrin <- mean_icc_by_method_filter_kathrin %>% 
   prepare_data_kathrin("mean_icc", c("approach", "weight", "filter"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.8, "greater", icc_note, 3, seq(5, 55, 5))
-
