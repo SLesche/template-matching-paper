@@ -37,7 +37,8 @@ icc_data <- cor_data %>%
   group_by(task, filter, group, bin, approach, component, weight, penalty, normalization) %>% 
   summarize(
     cor_with_peak = custom_icc(latency, manual_peak_lat),
-    cor_with_area = custom_icc(latency, manual_area_lat)
+    cor_with_area = custom_icc(latency, manual_area_lat),
+    n = sum(!is.na(latency)),
   ) %>% 
   pivot_longer(
     cols = starts_with("cor_with"),
@@ -81,6 +82,23 @@ mean_icc_by_method_kathrin <- icc_data %>%
     max_icc = max(icc, na.rm = TRUE),
     n = n()
   )
+
+
+meta_icc_by_method_kathrin <- icc_data %>% 
+  mutate(
+    z_icc = atanh(icc),
+    var_z = 1 / (n - 3)
+  ) %>%
+  group_by(component, approach, weight, penalty) %>%
+  nest() %>%
+  mutate(
+    meta_model = map(data, ~ metafor::rma(yi = .x$z_icc, vi = .x$var_z, method = "REML")),
+    pooled_est = map_dbl(meta_model, ~ tanh(.x$b)),  # back-transform to ICC
+    ci_lb = map_dbl(meta_model, ~ tanh(.x$ci.lb)),
+    ci_ub = map_dbl(meta_model, ~ tanh(.x$ci.ub)),
+    k = map_int(data, nrow)
+  ) %>%
+  select(-data)
 
 mean_icc_by_method_task_kathrin <- icc_data %>% 
   group_by(task, component, approach, weight, penalty) %>% 

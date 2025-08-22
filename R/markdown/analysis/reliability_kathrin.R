@@ -80,6 +80,23 @@ mean_reliability_by_method_kathrin <- rel_overview_kathrin %>%
     n = n()
   )
 
+meta_reliability_by_method_kathrin <- rel_overview_kathrin %>% 
+  filter(!grepl("manual", approach)) %>% 
+  mutate(
+    z_rel = atanh(reliability),
+    var_z = 1 / (n - 3)
+  ) %>%
+  group_by(component, approach, weight, penalty) %>%
+  nest() %>%
+  mutate(
+    meta_model = map(data, ~ metafor::rma(yi = .x$z_rel, vi = .x$var_z, method = "REML")),
+    pooled_est = map_dbl(meta_model, ~ tanh(.x$b)),  # back-transform to ICC
+    ci_lb = map_dbl(meta_model, ~ tanh(.x$ci.lb)),
+    ci_ub = map_dbl(meta_model, ~ tanh(.x$ci.ub)),
+    k = map_int(data, nrow)
+  ) %>%
+  select(-data)
+
 mean_reliability_by_method_task_kathrin <- rel_overview_kathrin %>% 
   filter(!grepl("manual", approach)) %>% 
   group_by(task, component, approach, weight, penalty) %>% 
