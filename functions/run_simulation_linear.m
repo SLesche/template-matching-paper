@@ -62,11 +62,11 @@ function[] = run_simulation_linear(n_simuls, sliced_trials, time_vec, method_tab
     cfg.sign      = 1;              %search for a positive component
     cfg.percAmp   = 0.3;            %percentage of amplitude for on- and offsets
     cfg.percArea  = 0.5;            %defaults to 50% anyway
+    cfg.areaWin = 'ampLat'; % Now revised to the correct approach, restrict by onset/offset, not only crossings
     cfg.peakWin   = window_control;      %set window for searching the peak
     cfg.chans = 1;
     cfg.timeFormat = 'ms';
     cfg.peakWidth = 5;
-    cfg.cWinWidth = -100;
     cfg.fig = false;
     cfg.extract   = 'areaLat';
     

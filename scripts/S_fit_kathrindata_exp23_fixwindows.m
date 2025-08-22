@@ -50,8 +50,6 @@ comb(end+1, :) = {"liesefeld_p2p_area", "none", "none", "none"};
 
 writetable(comb, "results/method_combinations_revision.csv")
 
-comb = comb(end, :);
-
 n_methods = height(comb);
 
 full_results = cell(n_tasks, n_groups, n_filter);
@@ -184,4 +182,4 @@ for itask = 1:n_tasks
     end
 end
 
-save("results/results_kathrinexp23_revision_liesefeld.mat", 'full_results');
+save("results/results_kathrinexp23_revision.mat", 'full_results');
