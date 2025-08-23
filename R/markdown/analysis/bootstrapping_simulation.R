@@ -132,7 +132,7 @@ ci_summary_icc_simulation <- icc_boot_results %>%
 
 load("./markdown/analysis/processed_data/full_data_simulation_linear_revision.Rdata")
 
-data_for_boot <- full_data %>% 
+data_for_boot <-full_data %>% 
   ungroup() %>% 
   mutate(
     latency = ifelse(approach %in% c("maxcor", "minsq") & (fit_cor < 0.3 | b_param > 1.9 | b_param < 0.5), NA, latency)
@@ -142,7 +142,7 @@ data_for_boot <- full_data %>%
     is_outlier = is_outlier(latency)
   ) %>% 
   ungroup() %>% 
-  mutate(lateny = ifelse(is_outlier == 0, latency, NA))
+  mutate(latency = ifelse(is_outlier == 0, latency, NA))
 
 # ---- Run bootstrap ----
 options(future.globals.maxSize = 6 * 1024^3)  # 6 GB

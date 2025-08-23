@@ -4,7 +4,7 @@ library(tidyverse)
 
 
 source("./markdown/analysis/helper_functions_simulation.R")
-compute_new = TRUE
+compute_new = FALSE
 
 if(compute_new == TRUE){
   possible_filters <- c("4hz", "8hz", "16hz", "32hz")
@@ -41,6 +41,8 @@ if(compute_new == TRUE){
   
   full_data <- data.table::rbindlist(data_list)
   
+  save(full_data, file = "./markdown/analysis/processed_data/full_data_simulation_linear_revision.Rdata")
+  
   mean_missing_by_method_simulation <- full_data %>% 
     ungroup() %>% 
     mutate(
@@ -51,7 +53,7 @@ if(compute_new == TRUE){
       is_outlier = is_outlier(latency)
     ) %>% 
     ungroup() %>% 
-    mutate(lateny = ifelse(is_outlier == 0, latency, NA)) %>% 
+    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
     group_by(window_name, approach, weight, penalty) %>% 
     summarize(
       n = n(),
@@ -85,9 +87,16 @@ if(compute_new == TRUE){
   save(mean_missing_by_method_simulation, file = "./markdown/analysis/processed_data/mean_missing_by_method_simulation_revision_linear_spline.Rdata")
   
   average_data <- full_data %>% 
+    ungroup() %>% 
     mutate(
       latency = ifelse(approach %in% c("maxcor", "minsq") & (fit_cor < 0.3 | b_param > 1.9 | b_param < 0.5), NA, latency)
     ) %>% 
+    group_by(task_id, filter, approach, component, weight, penalty, normalize, simulation_id) %>% 
+    mutate(
+      is_outlier = is_outlier(latency)
+    ) %>% 
+    ungroup() %>% 
+    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
     pivot_wider(
       id_cols = c(task_id, method_id, simulation_id, filter, task_description, component, window_name, approach, weight, normalize, penalty, subject),
       names_from = is_simulation,
