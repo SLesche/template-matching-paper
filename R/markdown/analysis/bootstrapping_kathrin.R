@@ -125,7 +125,7 @@ data_for_boot <- cor_data %>%
 
 # ---- Original pipeline as a function ----
 compute_icc <- function(data) {
-  boot_data %>%
+  data %>%
     group_by(task, filter, group, bin, approach, component, weight, penalty, normalization) %>% 
     summarize(
       cor_with_peak = custom_icc(latency, manual_peak_lat),
