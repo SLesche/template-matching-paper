@@ -51,7 +51,7 @@ compute_icc <- function(data) {
 }
 
 # ---- Safe memory-efficient bootstrap ----
-bootstrap_icc_safe <- function(data, R = 1000, seed = 123, workers = 1, out_dir = tempdir()) {
+bootstrap_icc_safe <- function(data, R = 1000, seed = 123, workers = parallel::detectCores() - 1, out_dir = tempdir()) {
   setDT(data)  # ensure data.table
   
   subjects <- unique(data$subject)
@@ -162,7 +162,7 @@ compute_icc <- function(data) {
 # ---- Bootstrap function ----
 
 # ---- Safe memory-efficient bootstrap ----
-bootstrap_icc_safe <- function(data, R = 1000, seed = 123, workers = 1, out_dir = tempdir()) {
+bootstrap_icc_safe <- function(data, R = 1000, seed = 123, workers = parallel::detectCores() - 1, out_dir = tempdir()) {
   setDT(data)  # ensure data.table
   
   subjects <- unique(data$subject)
