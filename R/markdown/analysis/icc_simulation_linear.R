@@ -48,12 +48,12 @@ if(compute_new == TRUE){
     mutate(
       latency = ifelse(approach %in% c("maxcor", "minsq") & (fit_cor < 0.3 | b_param > 1.9 | b_param < 0.5), NA, latency)
     ) %>% 
-    group_by(task_id, filter, approach, component, weight, penalty, normalize, simulation_id) %>% 
+    group_by(task_id, filter, approach, component, weight, penalty, normalize, simulation_id, is_simulation, window_name) %>%
     mutate(
       is_outlier = is_outlier(latency)
-    ) %>% 
-    ungroup() %>% 
-    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
+    ) %>%
+    ungroup() %>%
+    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>%
     group_by(window_name, approach, weight, penalty) %>% 
     summarize(
       n = n(),
@@ -91,12 +91,12 @@ if(compute_new == TRUE){
     mutate(
       latency = ifelse(approach %in% c("maxcor", "minsq") & (fit_cor < 0.3 | b_param > 1.9 | b_param < 0.5), NA, latency)
     ) %>% 
-    group_by(task_id, filter, approach, component, weight, penalty, normalize, simulation_id) %>% 
+    group_by(task_id, filter, approach, component, weight, penalty, normalize, simulation_id, is_simulation, window_name) %>%
     mutate(
       is_outlier = is_outlier(latency)
-    ) %>% 
-    ungroup() %>% 
-    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
+    ) %>%
+    ungroup() %>%
+    mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>%
     pivot_wider(
       id_cols = c(task_id, method_id, simulation_id, filter, task_description, component, window_name, approach, weight, normalize, penalty, subject),
       names_from = is_simulation,
@@ -167,11 +167,6 @@ overview_table_missing_simulation <- mean_missing_by_method_simulation %>%
 
 mean_icc_by_method_filter_simulation <- average_data %>%
   filter(n_na < 50) %>%
-  group_by(filter, approach, window_name, weight, penalty) %>% 
-  mutate(
-    is_outlier = is_outlier(mean_emp_shift)
-  ) %>%
-  filter(is_outlier == 0) %>%
   group_by(filter, approach, window_name, weight, penalty) %>% 
   summarize(
     measurements = n(),
@@ -249,11 +244,6 @@ mean_icc_liesefeld_simulation <- mean_icc_by_method_simulation %>%
 
 mean_icc_by_method_filter_simulation <- average_data %>%
   filter(n_na < 50) %>%
-  group_by(filter, approach, window_name, weight, penalty) %>% 
-  mutate(
-    is_outlier = is_outlier(mean_emp_shift)
-  ) %>%
-  filter(is_outlier == 0) %>%
   group_by(filter, approach, window_name, weight, penalty) %>% 
   summarize(
     measurements = n(),

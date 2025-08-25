@@ -15,7 +15,7 @@ rel_overview_kathrin <- full_data %>%
     is_outlier = is_outlier(latency)
   ) %>% 
   ungroup() %>% 
-  mutate(lateny = ifelse(is_outlier == 0, latency, NA)) %>% 
+  mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
   pivot_wider(
     id_cols = c("task", "group", "filter", "component", "approach", "weight", "penalty", "subject"),
     names_from = "bin",

@@ -16,7 +16,7 @@ missing_data_kathrin <- full_data %>%
     is_outlier = is_outlier(latency)
   ) %>% 
   ungroup() %>% 
-  mutate(lateny = ifelse(is_outlier == 0, latency, NA)) %>% 
+  mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
   group_by(task, filter, group, bin, approach, component, weight, penalty, normalization) %>% 
   summarize(
     n = n(),

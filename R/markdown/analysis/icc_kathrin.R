@@ -33,7 +33,7 @@ icc_data <- cor_data %>%
     is_outlier = is_outlier(latency)
   ) %>% 
   ungroup() %>% 
-  mutate(lateny = ifelse(is_outlier == 0, latency, NA)) %>% 
+  mutate(latency = ifelse(is_outlier == 0, latency, NA)) %>% 
   group_by(task, filter, group, bin, approach, component, weight, penalty, normalization) %>% 
   summarize(
     cor_with_peak = custom_icc(latency, manual_peak_lat),

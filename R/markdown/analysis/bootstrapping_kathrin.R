@@ -24,6 +24,7 @@ data_for_boot <- full_data %>%
     names_prefix = "bin_",
     values_from = "latency"
   )
+
 # ---- Original pipeline as a function ----
 compute_reliabilities <- function(data) {
   data %>%
@@ -107,6 +108,7 @@ cor_data <- full_data %>%
   filter(approach != "individualmanual", approach != "jackknifemanual") %>% 
   left_join(., manual_peak, by = c("task", "filter", "group", "bin", "subject")) %>% 
   left_join(., manual_area, by = c("task", "filter", "group", "bin", "subject"))
+
 data_for_boot <- cor_data %>%
   mutate(
     latency = ifelse(
@@ -119,7 +121,7 @@ data_for_boot <- cor_data %>%
     is_outlier = is_outlier(latency)
   ) %>% 
   ungroup() %>% 
-  mutate(lateny = ifelse(is_outlier == 0, latency, NA))
+  mutate(latency = ifelse(is_outlier == 0, latency, NA))
 
 # ---- Original pipeline as a function ----
 compute_icc <- function(data) {
