@@ -1,3 +1,7 @@
+```{r}
+source("markdown/analysis/icc_simulation_linear.R")
+```
+
 # Empirical data
 ## Missing values
 (ref:overview-table-missing-by-task-kathrin) Missing values of different algorithms by task

@@ -1,7 +1,5 @@
 ```{r}
 source("markdown/analysis/icc_simulation.R")
-source("markdown/analysis/icc_simulation_linear.R")
-
 ```
 
 ## Results

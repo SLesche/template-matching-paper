@@ -50,7 +50,7 @@ print_freq_percent <- function(freq){
 
 
 print_rel <- function(rel){
-  return(paste0("$\alpha~=~", papaja::apa_num(rel), "$"))
+  return(paste0("$\alpha =~", papaja::apa_num(rel), "$"))
 }
 
 print_icc <- function(icc){
