@@ -165,7 +165,7 @@ overview_table_missing_simulation <- mean_missing_by_method_simulation %>%
   make_flextable_kathrin(., 0.1, "less", missing_note, 2, c(4, 8))
 
 
-mean_icc_by_method_filter_simulation <- average_data %>%
+mean_icc_by_method_filter_simulation_linear <- average_data %>%
   filter(n_na < 50) %>%
   group_by(filter, approach, window_name, weight, penalty) %>% 
   summarize(
