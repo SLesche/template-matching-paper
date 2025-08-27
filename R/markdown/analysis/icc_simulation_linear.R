@@ -182,6 +182,31 @@ mean_icc_by_method_simulation <- mean_icc_by_method_filter_simulation %>%
             cor = mean(cor),
             icc = mean(icc))
 
+load("./markdown/analysis/processed_data/bootstrap_icc_linear_simulation.Rdata")
+
+ci_mean_icc_by_method_simulation <- icc_boot_results_linear %>% 
+  group_by(bootstrap_id, approach, component, weight, penalty) %>% 
+  summarize(missing = mean(missing), 
+            cor = mean(cor),
+            icc = mean(icc)) %>% 
+  group_by(component, approach, weight, penalty) %>%
+  summarize(
+    mean_icc_boot = mean(icc , na.rm = TRUE),
+    ci_lower_icc = quantile(icc , 0.025, na.rm = TRUE),
+    ci_upper_icc = quantile(icc , 0.975, na.rm = TRUE),
+    mean_missing_boot = mean(missing , na.rm = TRUE),
+    ci_lower_missing = quantile(missing , 0.025, na.rm = TRUE),
+    ci_upper_missing = quantile(missing , 0.975, na.rm = TRUE),
+    .groups = "drop",
+  )
+
+full_mean_icc_by_method_simulation <- mean_icc_by_method_simulation %>% 
+  left_join(ci_mean_icc_by_method_simulation) %>% 
+  mutate(
+    mean_icc = paste0(round(icc, 2), "\n[", round(ci_lower_icc, 2), ", ", round(ci_upper_icc,2 ), "]")
+  )
+
+
 plot_icc_overview_simulation <- mean_icc_by_method_filter_simulation %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
   arrange(approach, icc) %>%
@@ -253,9 +278,9 @@ mean_icc_by_method_filter_simulation <- average_data %>%
   ) %>% 
   rename("component" = "window_name")
 
-icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used."
+icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used. MAXCOR and MINSQ refer to the template matching algorithms maximizing the correlation or minimizing the squared distance, respectively. peak refers to the peak latency approach, area to a standard 50% fractional area latency approach. peakAmp refers to a modified fractional area latency approach, using 50% of the peak amplitude as the new baseline and ampLat uses 30% of the peak amplitude as the baseline and additionally constrains the measurement window by the on- and offset of the component."
 overview_table_icc_simulation_linear <- mean_icc_by_method_simulation %>% 
-  prepare_data_kathrin("icc", c("approach", "weight"), c("window", "penalty")) %>% 
+  prepare_data_kathrin("mean_icc", c("approach", "weight"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.8, "greater", icc_note, 2, c(4, 8))
 
 overview_table_icc_by_filter_simulation_linear <- mean_icc_by_method_filter_simulation %>%
