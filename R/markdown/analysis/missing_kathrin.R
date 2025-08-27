@@ -84,7 +84,7 @@ mean_missing_manual_kathrin <- mean_missing_by_method_kathrin %>%
 
 
 # Tables for presentation
-missing_note <- "Frequency of missing values per algorithm. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used."
+missing_note <- "Frequency of missing values per algorithm. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used. MAXCOR and MINSQ refer to the template matching algorithms maximizing the correlation or minimizing the squared distance, respectively. peak referes to the peak latency approach, area to a standard 50% fractional area latency approach. liesefeld_peakLat refers to a modified fractional area latency approach, using 50% of the peak amplitude as the new baseline and liesefeld_ampLat uses 30% of the peak amplitude as the baseline and additionally constrains the measurement window by the on- and offset of the component."
 overview_table_missing_kathrin <- mean_missing_by_method_kathrin %>% 
   prepare_data_kathrin("mean_missing", c("approach", "weight"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.1, "less", missing_note, 2, c(4, 8))

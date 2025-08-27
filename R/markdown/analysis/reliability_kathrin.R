@@ -4,6 +4,8 @@ load("./markdown/analysis/processed_data/long_data_exp23_revision.Rdata")
 source("./markdown/analysis/helper_functions_exp23.R")
 source("./markdown/analysis/helper_funcs_analysis.R")
 
+load("./markdown/analysis/processed_data/bootstrap_reliability_kathrin.Rdata")
+
 rel_overview_kathrin <- full_data %>% 
   mutate(
     latency = ifelse(
@@ -80,6 +82,21 @@ mean_reliability_by_method_kathrin <- rel_overview_kathrin %>%
     n = n()
   )
 
+ci_mean_reliability_by_method_kathrin <- rel_boot_results %>%
+  group_by(component, approach, weight, penalty) %>%
+  summarize(
+    mean_reliability = mean(mean_rel , na.rm = TRUE),
+    ci_lower = quantile(mean_rel , 0.025, na.rm = TRUE),
+    ci_upper = quantile(mean_rel , 0.975, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+full_mean_reliability_by_method_kathrin <- mean_reliability_by_method_kathrin %>% 
+  left_join(ci_mean_reliability_by_method_kathrin) %>% 
+  mutate(
+    mean_rel = paste0(round(mean_rel, 2), "\n[", round(ci_lower, 2), ", ", round(ci_upper,2 ), "]")
+  )
+
 mean_reliability_by_method_task_kathrin <- rel_overview_kathrin %>% 
   filter(!grepl("manual", approach)) %>% 
   group_by(task, component, approach, weight, penalty) %>% 
@@ -106,32 +123,76 @@ mean_reliability_minsq_kathrin <- mean_reliability_by_method_kathrin %>%
   filter(approach == "minsq") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
 
+ci_reliability_minsq_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "minsq") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
 mean_reliability_maxcor_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "maxcor") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
+
+ci_reliability_maxcor_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "maxcor") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
 
 mean_reliability_peak_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "peak", component == "p3_250_900") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
 
+ci_reliability_peak_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "peak") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
 mean_reliability_area_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "area", component == "p3_250_700") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
+
+ci_reliability_area_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "area") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
 
 mean_reliability_liesefeld_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "liesefeld_area", component == "p3_250_700") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
 
+ci_reliability_liesefeld_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_area") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
+
 mean_reliability_liesefeldp2p_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "liesefeld_p2p_area", component == "p3_250_700") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
 
+ci_reliability_liesefeldp2p_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_p2p_area") %>%
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
 mean_reliability_manual_kathrin <- 0.89 %>% print_rel()
 
 # Tables
-rel_note <- "Reliability has been estimated by Spearman-Brown corrected split-half correlations. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used."
+rel_note <- "Reliability has been estimated by two-part coefficient alpha. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used. MAXCOR and MINSQ refer to the template matching algorithms maximizing the correlation or minimizing the squared distance, respectively. peak referes to the peak latency approach, area to a standard 50% fractional area latency approach. liesefeld_peakLat refers to a modified fractional area latency approach, using 50% of the peak amplitude as the new baseline and liesefeld_ampLat uses 30% of the peak amplitude as the baseline and additionally constrains the measurement window by the on- and offset of the component."
 
-overview_table_rel_kathrin <- mean_reliability_by_method_kathrin %>% 
+overview_table_rel_kathrin <- full_mean_reliability_by_method_kathrin %>% 
   prepare_data_kathrin("mean_rel",  c("approach", "weight"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.8, "greater", rel_note, 2, c(4, 8))
 

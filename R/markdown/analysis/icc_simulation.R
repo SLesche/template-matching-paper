@@ -183,7 +183,31 @@ mean_icc_by_method_simulation <- mean_icc_by_method_filter_simulation %>%
   summarize(missing = mean(missing), 
             cor = mean(cor),
             icc = mean(icc))
-  
+
+load("./markdown/analysis/processed_data/bootstrap_icc_simulation.Rdata")
+
+ci_mean_icc_by_method_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id, approach, component, weight, penalty) %>% 
+  summarize(missing = mean(missing), 
+            cor = mean(cor),
+            icc = mean(icc)) %>% 
+  group_by(component, approach, weight, penalty) %>%
+  summarize(
+    mean_icc_boot = mean(icc , na.rm = TRUE),
+    ci_lower_icc = quantile(icc , 0.025, na.rm = TRUE),
+    ci_upper_icc = quantile(icc , 0.975, na.rm = TRUE),
+    mean_missing_boot = mean(missing , na.rm = TRUE),
+    ci_lower_missing = quantile(missing , 0.025, na.rm = TRUE),
+    ci_upper_missing = quantile(missing , 0.975, na.rm = TRUE),
+    .groups = "drop",
+  )
+
+full_mean_icc_by_method_simulation <- mean_icc_by_method_simulation %>% 
+  left_join(ci_mean_icc_by_method_simulation) %>% 
+  mutate(
+    mean_icc = paste0(round(icc, 2), "\n[", round(ci_lower_icc, 2), ", ", round(ci_upper_icc,2 ), "]")
+  )
+
 plot_icc_overview_simulation <- mean_icc_by_method_filter_simulation %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
   arrange(approach, icc) %>%
@@ -212,45 +236,104 @@ mean_icc_hammingtukey_simulation <- mean_icc_by_method_simulation %>%
   filter(weight %in% c("get_hamming_weights", "get_tukey_weights")) %>% pull(icc) %>%
   mean() %>% print_icc()
 
+ci_icc_hammingtukey_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(weight %in% c("get_hamming_weights", "get_tukey_weights")) %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_normalized_simulation <- mean_icc_by_method_simulation %>% 
   filter(weight %in% c("get_normalized_weights")) %>% pull(icc) %>%
   mean() %>% print_icc()
 
-mean_icc_minsq_hamming_simulation <- mean_icc_by_method_simulation %>% 
-  filter(approach == "minsq", weight == "get_hamming_weights") %>% pull(icc) %>%
-  mean() %>% print_icc()
+ci_icc_normalized_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(weight %in% c("get_normalized_weights")) %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_minsq_normalized_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "minsq", weight == "get_normalized_weights") %>% pull(icc) %>%
   mean() %>% print_icc()
 
-mean_icc_maxcor_hamming_simulation <- mean_icc_by_method_simulation %>% 
-  filter(approach == "maxcor", weight == "get_hamming_weights") %>% pull(icc) %>%
-  mean() %>% print_icc()
+ci_icc_normalized_minsq_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "minsq", weight == "get_normalized_weights") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_maxcor_normalized_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "maxcor", weight == "get_normalized_weights") %>% pull(icc) %>%
   mean() %>% print_icc()
 
+ci_icc_normalized_maxcor_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "maxcor", weight == "get_normalized_weights") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
+mean_icc_maxcor_none_simulation <- mean_icc_by_method_simulation %>% 
+  filter(approach == "maxcor", weight == "none") %>% pull(icc) %>%
+  mean() %>% print_icc()
+
+ci_icc_normalized_maxcor_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "maxcor", weight == "none") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_peak_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "peak", component == "p3_250_900") %>% pull(icc) %>%
   mean() %>% print_icc()
+
+ci_icc_peak_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "peak", component == "p3_250_900") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_area_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "area", component == "p3_250_700") %>% pull(icc) %>%
   mean() %>% print_icc()
 
+ci_icc_area_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "area", component == "p3_250_700") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_liesefeld_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "liesefeld_area", component == "p3_250_700") %>% pull(icc) %>%
   mean() %>% print_icc()
+
+ci_icc_liesefeld_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_area", component == "p3_250_700") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_liesefeldp2p_simulation <- mean_icc_by_method_simulation %>% 
   filter(approach == "liesefeld_p2p_area", component == "p3_250_700") %>% pull(icc) %>%
   mean() %>% print_icc()
 
-icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used."
-overview_table_icc_simulation <- mean_icc_by_method_simulation %>% 
-  prepare_data_kathrin("icc", c("approach", "weight"), c("window", "penalty")) %>% 
+ci_icc_liesefeldp2p_simulation <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_p2p_area", component == "p3_250_700") %>%
+  summarize(mean_icc = mean(icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
+icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used. MAXCOR and MINSQ refer to the template matching algorithms maximizing the correlation or minimizing the squared distance, respectively. peak referes to the peak latency approach, area to a standard 50% fractional area latency approach. liesefeld_peakLat refers to a modified fractional area latency approach, using 50% of the peak amplitude as the new baseline and liesefeld_ampLat uses 30% of the peak amplitude as the baseline and additionally constrains the measurement window by the on- and offset of the component."
+overview_table_icc_simulation <- full_mean_icc_by_method_simulation %>% 
+  prepare_data_kathrin("mean_icc", c("approach", "weight"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.8, "greater", icc_note, 2, c(4, 8))
 
 overview_table_icc_by_filter_simulation <- mean_icc_by_method_filter_simulation %>%

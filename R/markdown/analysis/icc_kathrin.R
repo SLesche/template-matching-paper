@@ -5,6 +5,8 @@ load("./markdown/analysis/processed_data/long_data_exp23_revision.Rdata")
 source("./markdown/analysis/helper_functions_exp23.R")
 source("./markdown/analysis/helper_funcs_analysis.R")
 
+load("./markdown/analysis/processed_data/bootstrap_icc_kathrin.Rdata")
+
 manual_peak <- full_data %>% 
   filter(approach == "individualmanual", component == "p3_peak") %>% 
   mutate(manual_peak_lat = latency) %>% 
@@ -82,6 +84,21 @@ mean_icc_by_method_kathrin <- icc_data %>%
     n = n()
   )
 
+ci_mean_icc_by_method_kathrin <- icc_boot_results %>%
+  group_by(component, approach, weight, penalty) %>%
+  summarize(
+    mean_reliability = mean(mean_icc , na.rm = TRUE),
+    ci_lower = quantile(mean_icc , 0.025, na.rm = TRUE),
+    ci_upper = quantile(mean_icc , 0.975, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+full_mean_icc_by_method_kathrin <- mean_icc_by_method_kathrin %>% 
+  left_join(ci_mean_icc_by_method_kathrin) %>% 
+  mutate(
+    mean_icc = paste0(round(mean_icc, 2), "\n[", round(ci_lower, 2), ", ", round(ci_upper,2 ), "]")
+  )
+
 mean_icc_by_method_task_kathrin <- icc_data %>% 
   group_by(task, component, approach, weight, penalty) %>% 
   summarize(
@@ -106,46 +123,94 @@ mean_icc_hammingtukey_kathrin <- mean_icc_by_method_kathrin %>%
   filter(weight %in% c("get_hamming_weights", "get_tukey_weights")) %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
+ci_icc_hammingtukey_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(weight %in% c("get_hamming_weights", "get_tukey_weights")) %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_normalized_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(weight %in% c("get_normalized_weights")) %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
-mean_icc_minsq_hamming_kathrin <- mean_icc_by_method_kathrin %>% 
-  filter(approach == "minsq", weight == "get_hamming_weights") %>% pull(mean_icc) %>%
-  mean() %>% print_icc()
+ci_icc_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(weight %in% c("get_normalized_weights")) %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_minsq_normalized_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "minsq", weight == "get_normalized_weights") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
-mean_icc_maxcor_hamming_kathrin <- mean_icc_by_method_kathrin %>% 
-  filter(approach == "maxcor", weight == "get_hamming_weights") %>% pull(mean_icc) %>%
-  mean() %>% print_icc()
+ci_icc_minsq_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "minsq", weight == "get_normalized_weights") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_maxcor_normalized_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "maxcor", weight == "get_normalized_weights") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
+ci_icc_maxcor_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "maxcor", weight == "get_normalized_weights") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_peak_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "peak", component == "p3_250_900") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
+
+ci_icc_peak_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "peak",component == "p3_250_900") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_area_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "area", component == "p3_250_700") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
+ci_icc_area_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "area",component == "p3_250_700") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 mean_icc_liesefeld_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "liesefeld_area", component == "p3_250_700") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
+
+ci_icc_liesefeld_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_area",component == "p3_250_700") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
 
 mean_icc_liesefeldp2p_kathrin <- mean_icc_by_method_kathrin %>% 
   filter(approach == "liesefeld_p2p_area", component == "p3_250_700") %>% pull(mean_icc) %>%
   mean() %>% print_icc()
 
+ci_icc_liesefeldp2p_normalized_kathrin <- icc_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "liesefeld_p2p_area",component == "p3_250_700") %>%
+  summarize(mean_icc = mean(mean_icc)) %>% 
+  pull(mean_icc) %>%
+  quantile(c(0.025, 0.975))
+
 
 # Overview table
-icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used."
-overview_table_icc_kathrin <- mean_icc_by_method_kathrin %>% 
+icc_note <- "Intra-class correlations focusing on absolute agreement. The rows indicate combinations of similarity measure and weighting function. The columns denote the measurement window and indicate if a penalty was used. MAXCOR and MINSQ refer to the template matching algorithms maximizing the correlation or minimizing the squared distance, respectively. peak referes to the peak latency approach, area to a standard 50% fractional area latency approach. liesefeld_peakLat refers to a modified fractional area latency approach, using 50% of the peak amplitude as the new baseline and liesefeld_ampLat uses 30% of the peak amplitude as the baseline and additionally constrains the measurement window by the on- and offset of the component."
+overview_table_icc_kathrin <- full_mean_icc_by_method_kathrin %>% 
   prepare_data_kathrin("mean_icc", c("approach", "weight"), c("window", "penalty")) %>% 
   make_flextable_kathrin(., 0.8, "greater", icc_note, 2, c(4, 8))
 
