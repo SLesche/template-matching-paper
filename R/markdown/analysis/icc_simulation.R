@@ -210,6 +210,16 @@ full_mean_icc_by_method_simulation <- mean_icc_by_method_simulation %>%
 
 plot_icc_overview_simulation <- mean_icc_by_method_filter_simulation %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
+  mutate(
+    approach = case_when(
+      approach == "liesefeld_area" ~ "Liesefeld (peakAmp)",
+      approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
+      approach == "minsq" ~ "MINSQ",
+      approach == "maxcor" ~ "MAXCOR",
+      approach == "peak" ~ "Peak",
+      approach == "area" ~ "Area"
+    )
+  ) %>% 
   arrange(approach, icc) %>%
   group_by(approach) %>%
   mutate(

@@ -52,6 +52,16 @@ icc_data <- cor_data %>%
 
 plot_icc_overview <- icc_data %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
+  mutate(
+    approach = case_when(
+      approach == "liesefeld_area" ~ "Liesefeld (peakAmp)",
+      approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
+      approach == "minsq" ~ "MINSQ",
+      approach == "maxcor" ~ "MAXCOR",
+      approach == "peak" ~ "Peak",
+      approach == "area" ~ "Area"
+    )
+  ) %>% 
   arrange(approach, icc) %>%
   group_by(approach) %>%
   mutate(

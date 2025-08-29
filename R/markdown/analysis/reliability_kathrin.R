@@ -47,6 +47,16 @@ rel_overview_kathrin <- full_data %>%
 plot_rel_overview <- rel_overview_kathrin %>%
   filter(!grepl("manual", approach)) %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
+  mutate(
+    approach = case_when(
+      approach == "liesefeld_area" ~ "Liesefeld (peakAmp)",
+      approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
+      approach == "minsq" ~ "MINSQ",
+      approach == "maxcor" ~ "MAXCOR",
+      approach == "peak" ~ "Peak",
+      approach == "area" ~ "Area"
+    )
+  ) %>% 
   arrange(approach, reliability) %>%
   group_by(approach) %>%
   mutate(
@@ -141,6 +151,30 @@ ci_reliability_maxcor_kathrin <- rel_boot_results %>%
   pull(mean_rel) %>%
   quantile(c(0.025, 0.975))
 
+mean_reliability_maxcor_none_kathrin <- mean_reliability_by_method_kathrin %>% 
+  filter(approach == "maxcor", weight == "none", penalty == "exponential_penalty") %>% pull(mean_rel) %>%
+  mean() %>% print_rel()
+
+ci_reliability_maxcor_none_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "maxcor", weight == "none", penalty == "exponential_penalty") %>% 
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
+mean_reliability_minsq_norm_kathrin <- mean_reliability_by_method_kathrin %>% 
+  filter(approach == "minsq", weight == "get_normalized_weights", penalty == "exponential_penalty") %>% 
+  pull(mean_rel) %>%
+  mean() %>% print_rel()
+
+ci_reliability_minsq_norm_kathrin <- rel_boot_results %>% 
+  group_by(bootstrap_id) %>% 
+  filter(approach == "minsq", weight == "get_normalized_weights", penalty == "exponential_penalty") %>% 
+  summarize(mean_rel = mean(mean_rel)) %>% 
+  pull(mean_rel) %>%
+  quantile(c(0.025, 0.975))
+
+
 mean_reliability_peak_kathrin <- mean_reliability_by_method_kathrin %>% 
   filter(approach == "peak", component == "p3_250_900") %>% pull(mean_rel) %>%
   mean() %>% print_rel()
@@ -158,7 +192,7 @@ mean_reliability_area_kathrin <- mean_reliability_by_method_kathrin %>%
 
 ci_reliability_area_kathrin <- rel_boot_results %>% 
   group_by(bootstrap_id) %>% 
-  filter(approach == "area") %>%
+  filter(approach == "area", component == "p3_250_700") %>%
   summarize(mean_rel = mean(mean_rel)) %>% 
   pull(mean_rel) %>%
   quantile(c(0.025, 0.975))
@@ -170,7 +204,7 @@ mean_reliability_liesefeld_kathrin <- mean_reliability_by_method_kathrin %>%
 
 ci_reliability_liesefeld_kathrin <- rel_boot_results %>% 
   group_by(bootstrap_id) %>% 
-  filter(approach == "liesefeld_area") %>%
+  filter(approach == "liesefeld_area", component == "p3_250_700") %>%
   summarize(mean_rel = mean(mean_rel)) %>% 
   pull(mean_rel) %>%
   quantile(c(0.025, 0.975))
@@ -182,7 +216,7 @@ mean_reliability_liesefeldp2p_kathrin <- mean_reliability_by_method_kathrin %>%
 
 ci_reliability_liesefeldp2p_kathrin <- rel_boot_results %>% 
   group_by(bootstrap_id) %>% 
-  filter(approach == "liesefeld_p2p_area") %>%
+  filter(approach == "liesefeld_p2p_area", component == "p3_250_700") %>%
   summarize(mean_rel = mean(mean_rel)) %>% 
   pull(mean_rel) %>%
   quantile(c(0.025, 0.975))
