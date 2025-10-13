@@ -58,8 +58,8 @@ plot_icc_overview <- icc_data %>%
       approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
       approach == "minsq" ~ "MINSQ",
       approach == "maxcor" ~ "MAXCOR",
-      approach == "peak" ~ "Peak",
-      approach == "area" ~ "Area"
+      approach == "peak" ~ "peak",
+      approach == "area" ~ "area"
     )
   ) %>% 
   arrange(approach, icc) %>%

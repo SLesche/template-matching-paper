@@ -53,8 +53,8 @@ plot_rel_overview <- rel_overview_kathrin %>%
       approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
       approach == "minsq" ~ "MINSQ",
       approach == "maxcor" ~ "MAXCOR",
-      approach == "peak" ~ "Peak",
-      approach == "area" ~ "Area"
+      approach == "peak" ~ "peak",
+      approach == "area" ~ "area"
     )
   ) %>% 
   arrange(approach, reliability) %>%

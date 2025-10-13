@@ -215,8 +215,8 @@ plot_icc_overview_simulation <- mean_icc_by_method_filter_simulation_linear %>%
       approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
       approach == "minsq" ~ "MINSQ",
       approach == "maxcor" ~ "MAXCOR",
-      approach == "peak" ~ "Peak",
-      approach == "area" ~ "Area"
+      approach == "peak" ~ "peak",
+      approach == "area" ~ "area"
     )
   ) %>% 
   arrange(approach, icc) %>%
