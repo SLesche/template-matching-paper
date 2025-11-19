@@ -49,8 +49,8 @@ plot_rel_overview <- rel_overview_kathrin %>%
   filter(weight == "get_normalized_weights" | !approach %in% c("minsq", "maxcor")) %>% 
   mutate(
     approach = case_when(
-      approach == "liesefeld_area" ~ "Liesefeld (peakAmp)",
-      approach == "liesefeld_p2p_area" ~ "Liesefeld (ampLat)",
+      approach == "liesefeld_area" ~ "Liesefeld A",
+      approach == "liesefeld_p2p_area" ~ "Liesefeld B",
       approach == "minsq" ~ "MINSQ",
       approach == "maxcor" ~ "MAXCOR",
       approach == "peak" ~ "peak",
